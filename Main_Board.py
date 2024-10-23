@@ -4,7 +4,7 @@ The Main_Board File holds the Main_Board class which is responsible for managing
 """
 
 import pygame
-from constants import BLACK, ROWS, RED, SQUARE_SIZE, COLS, WHITE
+from constants import BLACK, ROWS, RED, SQUARE_SIZE, COLS, WHITE, BLUE
 from pieces import Piece
 
 class Main_Board:
@@ -24,13 +24,15 @@ class Main_Board:
         self.create_board()
     
     def draw_squares(self, win):
+        windowColor = BLACK
+        squareColor = BLUE
         """
         The draw squares function draws the squares on the board.
         """
-        win.fill(BLACK)
+        win.fill(windowColor)
         for row in range(ROWS):
             for col in range(row % 2, COLS, 2):
-                pygame.draw.rect(win, self.color, (row*SQUARE_SIZE, col *SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
+                pygame.draw.rect(win, squareColor, (row*SQUARE_SIZE, col *SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
 
     def evaluate(self):
         """
