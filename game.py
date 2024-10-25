@@ -3,6 +3,7 @@ Game.py
 The game file holds the game logic and game class.
 """
 import pygame
+import textwrap
 from constants import RED, WHITE, YELLOW, SQUARE_SIZE
 from Main_Board import Main_Board
 
@@ -31,6 +32,7 @@ class Game:
         self.screen = pygame.display.set_mode((1000, 700))
         self.player1 = player1
         self.player2 = player2
+        self.moveHistory = ""
         
     def check_turn_timeout(self):
         """
@@ -82,6 +84,11 @@ class Game:
         self.screen.blit(text_surface, (715, 350))
         self.screen.blit(text_surface2, (715, 400))
 
+    def display_move_history(self, moveHistory):
+        text = "Moves: " + moveHistory
+        text_surface = self.font.render(text, True, self.text_color)
+        self.screen.blit(text_surface, (0, 670))
+
     def update(self): 
         """
         The update function updates the board to show the current board and features.
@@ -92,6 +99,7 @@ class Game:
         self.display_turn()
         self.display_piece_count()
         self.display_player_names(self.player1, self.player2)
+        self.display_move_history(self.moveHistory)
         pygame.display.update()
         
     def winner(self): 
@@ -128,6 +136,8 @@ class Game:
         piece = self.board.get_piece(row, col)
         if self.selected and piece == 0 and (row, col) in self.valid_moves:
             self.board.move(self.selected, row, col)
+            self.moveHistory = self.moveHistory + "(" + str(col) + ", " + str(row) + "), "
+            print(self.moveHistory)
             skipped = self.valid_moves.get((row, col))
             if skipped:
                 self.board.remove(skipped)
