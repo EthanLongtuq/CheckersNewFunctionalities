@@ -33,7 +33,11 @@ class Game:
         self.player1 = player1
         self.player2 = player2
         self.moveHistory = ""
-        self.news_font = pygame.font.Font(None, 24) #theFont
+        self.news_font = pygame.font.Font(None, 27)
+        self.news_font2 = pygame.font.Font(None, 36) 
+        self.news_font3 = pygame.font.Font(None, 24) 
+
+
     
     def check_turn_timeout(self):
         """
@@ -93,13 +97,23 @@ class Game:
     def display_reddit(self):
         client = redditwarp.SYNC.Client()
         m = next(client.p.subreddit.pull.top('Temple', amount=1, time='hour'))
-            
-        wrapped_text = textwrap.fill(m.title, width=35)
+        
+        headerText = "Newest TU Reddit Topic: "
+        headerSurface = self.news_font2.render(headerText, True, WHITE)
+        self.screen.blit(headerSurface, (700,450))
 
-        for i, line in enumerate(wrapped_text.split("\n")):
-            text_surface = self.news_font.render(line, True, WHITE)
-            self.screen.blit(text_surface, (700, 450))
-    
+        api_text = textwrap.fill(m.title, width=35)
+        api_surface = self.news_font.render(api_text, True, WHITE)
+        self.screen.blit(api_surface, (700, 480))
+
+        descText= "To see post, go to link: "
+        descSurface = self.news_font2.render(descText, True, WHITE)
+        self.screen.blit(descSurface, (700,510))
+
+        linkText= "https://www.reddit.com/r/Temple/new/"
+        linkSurface = self.news_font3.render(linkText, True, WHITE)
+        self.screen.blit(linkSurface, (700,545))
+
     def update(self): 
         """
         The update function updates the board to show the current board and features.
