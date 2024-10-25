@@ -3,7 +3,7 @@ Game.py
 The game file holds the game logic and game class.
 """
 import pygame
-import textwrap
+import redditwarp.SYNC
 from constants import RED, WHITE, YELLOW, SQUARE_SIZE
 from Main_Board import Main_Board
 
@@ -89,6 +89,14 @@ class Game:
         text_surface = self.font.render(text, True, self.text_color)
         self.screen.blit(text_surface, (0, 670))
 
+    def display_news(self):
+        client = redditwarp.SYNC.Client()
+        m = next(client.p.subreddit.pull.top('Temple', amount=1, time='hour'))
+        text_surface = self.font.render(m.title, True, self.text_color)
+        text_surface2 = self.font.render(m.title, True, self.text_color)
+        self.screen.blit(text_surface, (750, 450))
+        self.screen.blit(text_surface2, (750, 500))
+
     def update(self): 
         """
         The update function updates the board to show the current board and features.
@@ -100,6 +108,7 @@ class Game:
         self.display_piece_count()
         self.display_player_names(self.player1, self.player2)
         self.display_move_history(self.moveHistory)
+        self.display_news()
         pygame.display.update()
         
     def winner(self): 

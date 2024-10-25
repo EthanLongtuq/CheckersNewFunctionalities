@@ -4,6 +4,7 @@ The main file holds menu operations for the game including sound, settings, lead
 
 """
 import pygame
+import redditwarp.SYNC
 from SecondMenu import SecondMenu
 from constants import BLUE, YELLOW, RED, GREEN
 from ScoreManager import ScoreManager
@@ -69,6 +70,7 @@ def main():
     If a user hovers over a button, the button will change color to indicate that it has been clicked. If the user clicks on a button,
     the corresponding function will be called.
     """
+
     running = True
     while running:
         # did the user click the window close button?
