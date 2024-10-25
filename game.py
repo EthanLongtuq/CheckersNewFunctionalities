@@ -4,6 +4,7 @@ The game file holds the game logic and game class.
 """
 import pygame
 import redditwarp.SYNC
+import textwrap
 from constants import RED, WHITE, YELLOW, SQUARE_SIZE
 from Main_Board import Main_Board
 
@@ -27,13 +28,17 @@ class Game:
         self.turn = RED
         self.valid_moves = {}
         self.font = pygame.font.Font(None, 36)  # Font for rendering text
-        self.text_color = WHITE  # Text color
         self.text_urgent_color = RED  # Text color when time is running out
         self.screen = pygame.display.set_mode((1000, 700))
         self.player1 = player1
         self.player2 = player2
         self.moveHistory = ""
-        
+        self.news_font = pygame.font.Font(None, 27)
+        self.news_font2 = pygame.font.Font(None, 36) 
+        self.news_font3 = pygame.font.Font(None, 24) 
+
+
+    
     def check_turn_timeout(self):
         """
         The check turn timeout function checks the turn timeout and displays the move timer on the screen. If the time is running out, the text color is set to red.
@@ -41,11 +46,11 @@ class Game:
         elapsed_time = pygame.time.get_ticks() - self.turn_start_time
         elapsed_seconds = elapsed_time // 1000 
         text = f"Move Timer: {elapsed_seconds} s"
-        text_surface = self.font.render(text, True, self.text_color)
+        text_surface = self.font.render(text, True, WHITE)
         if elapsed_time > 3000:
             text_surface = self.font.render(text, True, self.text_urgent_color)
         else:
-            text_surface = self.font.render(text, True, self.text_color)
+            text_surface = self.font.render(text, True, WHITE)
         # Render text
         self.screen.blit(text_surface, (715, 50))
         if elapsed_time > self.turn_timeout:
@@ -59,7 +64,7 @@ class Game:
             text = f"Current Turn: RED"
         else:
             text = f"Current Turn: WHITE"
-        text_surface = self.font.render(text, True, self.text_color)
+        text_surface = self.font.render(text, True, WHITE)
         self.screen.blit(text_surface, (715, 100))
 
     def display_piece_count(self): 
@@ -68,8 +73,8 @@ class Game:
         """
         text = f"RED Pieces Left: {self.board.red_left}"
         text2 = f"WHITE Pieces Left: {self.board.white_left}"
-        text_surface = self.font.render(text, True, self.text_color)
-        text_surface2 = self.font.render(text2, True, self.text_color)
+        text_surface = self.font.render(text, True, WHITE)
+        text_surface2 = self.font.render(text2, True, WHITE)
         self.screen.blit(text_surface, (715, 150))
         self.screen.blit(text_surface2, (715, 200))
 
@@ -79,23 +84,35 @@ class Game:
         """
         text = f"Player 1: {player1}"
         text2 = f"Player 2: {player2}"
-        text_surface = self.font.render(text, True, self.text_color)
-        text_surface2 = self.font.render(text2, True, self.text_color)
+        text_surface = self.font.render(text, True, WHITE)
+        text_surface2 = self.font.render(text2, True, WHITE)
         self.screen.blit(text_surface, (715, 350))
         self.screen.blit(text_surface2, (715, 400))
 
     def display_move_history(self, moveHistory):
         text = "Moves: " + moveHistory
-        text_surface = self.font.render(text, True, self.text_color)
+        text_surface = self.font.render(text, True, WHITE)
         self.screen.blit(text_surface, (0, 670))
 
-    def display_news(self):
+    def display_reddit(self):
         client = redditwarp.SYNC.Client()
         m = next(client.p.subreddit.pull.top('Temple', amount=1, time='hour'))
-        text_surface = self.font.render(m.title, True, self.text_color)
-        text_surface2 = self.font.render(m.title, True, self.text_color)
-        self.screen.blit(text_surface, (750, 450))
-        self.screen.blit(text_surface2, (750, 500))
+        
+        headerText = "Newest TU Reddit Topic: "
+        headerSurface = self.news_font2.render(headerText, True, WHITE)
+        self.screen.blit(headerSurface, (700,450))
+
+        api_text = textwrap.fill(m.title, width=35)
+        api_surface = self.news_font.render(api_text, True, WHITE)
+        self.screen.blit(api_surface, (700, 480))
+
+        descText= "To see post, go to link: "
+        descSurface = self.news_font2.render(descText, True, WHITE)
+        self.screen.blit(descSurface, (700,510))
+
+        linkText= "https://www.reddit.com/r/Temple/new/"
+        linkSurface = self.news_font3.render(linkText, True, WHITE)
+        self.screen.blit(linkSurface, (700,545))
 
     def update(self): 
         """
@@ -108,7 +125,7 @@ class Game:
         self.display_piece_count()
         self.display_player_names(self.player1, self.player2)
         self.display_move_history(self.moveHistory)
-        self.display_news()
+        self.display_reddit()
         pygame.display.update()
         
     def winner(self): 
